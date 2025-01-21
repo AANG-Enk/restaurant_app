@@ -21,7 +21,7 @@ class Link {
     return '${BASE_URL}/review';
   }
 
-  String getLinkImage(type, id){
+  String getLinkImage(String type, int id){
     if(type == 'small'){
       return '${BASE_URL}/images/small/${id}';
     }else if(type == 'medium'){
