@@ -98,21 +98,21 @@ class _BottomNavScreenState extends State<BottomNavScreen>{
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.home),
+              Icon(FontAwesomeIcons.house),
               Text('Home', style: myTextTheme(configFont.font).labelLarge,)
             ],
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.search),
+              Icon(FontAwesomeIcons.search),
               Text('Search', style: myTextTheme(configFont.font).labelLarge,)
             ],
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.settings),
+              Icon(FontAwesomeIcons.cogs),
               Text('Settings', style: myTextTheme(configFont.font).labelLarge,)
             ],
           ),
