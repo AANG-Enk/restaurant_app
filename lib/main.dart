@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/style.dart';
+import 'package:restaurant_app/config/config_api.dart';
 import 'package:restaurant_app/config/config_font.dart';
 import 'package:restaurant_app/config/config_theme.dart';
 import 'package:restaurant_app/screen/HomeScreen.dart';
@@ -13,8 +14,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final configTheme = ConfigTheme();
   final configFont = ConfigFont();
+  final configApi = ConfigApi();
   await configTheme.loadTheme();
-  await configFont.loadFont;
+  await configFont.loadFont();
+  await configApi.getListRestaurant();
+
   runApp(
     MultiProvider(
       providers: [
@@ -23,6 +27,9 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (context) => configFont,
+        ),
+        ChangeNotifierProvider(
+          create: (context) => configApi,
         )
       ],
       child: const MyApp(),
@@ -89,7 +96,7 @@ class _BottomNavScreenState extends State<BottomNavScreen>{
         children: _pages,
       ),
       bottomNavigationBar: CurvedNavigationBar(
-        height: 60.0,
+        height: 70.0,
         color: isDarkMode ? darkSecondaryColor : lightSecondaryColor, 
         backgroundColor: isDarkMode ? darkPrimaryColor : lightPrimaryColor, 
         buttonBackgroundColor: isDarkMode ? darkPrimaryColor : lightPrimaryColor,
@@ -98,21 +105,21 @@ class _BottomNavScreenState extends State<BottomNavScreen>{
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(FontAwesomeIcons.house),
+              Icon(FontAwesomeIcons.house, size: 30.0,),
               Text('Home', style: myTextTheme(configFont.font).labelLarge,)
             ],
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(FontAwesomeIcons.search),
+              Icon(FontAwesomeIcons.search, size: 30.0,),
               Text('Search', style: myTextTheme(configFont.font).labelLarge,)
             ],
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(FontAwesomeIcons.cogs),
+              Icon(FontAwesomeIcons.cogs, size: 30.0,),
               Text('Settings', style: myTextTheme(configFont.font).labelLarge,)
             ],
           ),
