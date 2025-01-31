@@ -15,44 +15,46 @@ class HomeScreen extends StatelessWidget{
     final configTheme = Provider.of<ConfigTheme>(context);
     final configFont = Provider.of<ConfigFont>(context);
     final configApi = Provider.of<ConfigApi>(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 10.0),
-          child: Column(
-            children: [
-              Text(
-                'Restaurant',
-                style: myTextTheme(configFont.font).headlineLarge,
-              ),
-              Text(
-                'Recomendation restaurant for you!',
-                style: myTextTheme(configFont.font).bodySmall,
-              )
-            ],
-          ),
-        ),
-        const SizedBox(height: 20.0,),
-        if(configApi.isLoading)...[
-          const Center(
-            child: CircularProgressIndicator(),
-          )
-        ]else if(configApi.lists.isEmpty)...[
-          Center(
-            child: ElevatedButton(
-              onPressed: (){
-                configApi.getListRestaurant();
-              },
-              child: Text(
-                'Load Restaurant',
-                style: myTextTheme(configFont.font).headlineMedium,
-              ),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 10.0),
+            child: Column(
+              children: [
+                Text(
+                  'Restaurant',
+                  style: myTextTheme(configFont.font).headlineLarge,
+                ),
+                Text(
+                  'Recomendation restaurant for you!',
+                  style: myTextTheme(configFont.font).bodySmall,
+                )
+              ],
             ),
           ),
-        ]else...[
-          Expanded(
-            child: ListView.builder(
+          const SizedBox(height: 20.0,),
+          if(configApi.isLoading)...[
+            const Center(
+              child: CircularProgressIndicator(),
+            )
+          ]else if(configApi.lists.isEmpty)...[
+            Center(
+              child: ElevatedButton(
+                onPressed: (){
+                  configApi.getListRestaurant();
+                },
+                child: Text(
+                  'Load Restaurant',
+                  style: myTextTheme(configFont.font).headlineMedium,
+                ),
+              ),
+            ),
+          ]else...[
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
               itemCount: configApi.lists.length,
               itemBuilder: (context, index) {
                 final restaurant = configApi.lists[index];
@@ -121,10 +123,9 @@ class HomeScreen extends StatelessWidget{
                 );
               },
             ),
-          ),
-          const SizedBox(height: 20.0,),
-        ]
-      ],
+          ],
+        ],
+      ),
     );
   }
 }

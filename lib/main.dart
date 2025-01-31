@@ -96,32 +96,23 @@ class _BottomNavScreenState extends State<BottomNavScreen>{
         children: _pages,
       ),
       bottomNavigationBar: CurvedNavigationBar(
-        height: 70.0,
+        height: 55.0,
         color: isDarkMode ? darkSecondaryColor : lightSecondaryColor, 
         backgroundColor: isDarkMode ? darkPrimaryColor : lightPrimaryColor, 
-        buttonBackgroundColor: isDarkMode ? darkPrimaryColor : lightPrimaryColor,
+        buttonBackgroundColor: isDarkMode ? darkSecondaryColor : lightSecondaryColor,
         animationDuration: const Duration(milliseconds: 300),
-        items: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(FontAwesomeIcons.house, size: 30.0,),
-              Text('Home', style: myTextTheme(configFont.font).labelLarge,)
-            ],
+        items: const <Widget>[
+          Padding(
+            padding: EdgeInsets.all(5.0),
+            child: Icon(FontAwesomeIcons.house, size: 30.0,),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(FontAwesomeIcons.search, size: 30.0,),
-              Text('Search', style: myTextTheme(configFont.font).labelLarge,)
-            ],
+          Padding(
+            padding: EdgeInsets.all(5.0),
+            child: Icon(FontAwesomeIcons.search, size: 30.0,),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(FontAwesomeIcons.cogs, size: 30.0,),
-              Text('Settings', style: myTextTheme(configFont.font).labelLarge,)
-            ],
+          Padding(
+            padding: EdgeInsets.all(5.0),
+            child: Icon(FontAwesomeIcons.cogs, size: 30.0,),
           ),
         ],
         onTap: onNavItem
