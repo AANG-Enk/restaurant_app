@@ -8,7 +8,7 @@ class Link {
     return Uri.parse('${BASE_URL}/list');
   }
 
-  Uri getLinkDetailRestaurant(int id)
+  Uri getLinkDetailRestaurant(String id)
   {
     return Uri.parse('${BASE_URL}/detail/${id}');
   }

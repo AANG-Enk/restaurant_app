@@ -1,0 +1,230 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurant_app/common/style.dart';
+import 'package:restaurant_app/config/config_api.dart';
+import 'package:restaurant_app/config/config_font.dart';
+import 'package:restaurant_app/config/config_theme.dart';
+import 'package:restaurant_app/helper/link.dart';
+import 'package:restaurant_app/model/detail_restaurant.dart';
+
+class Detailscreen extends StatelessWidget {
+  Detailscreen({super.key, required this.id});
+  final String id;
+  final Link _configLink = new Link();
+  @override
+  Widget build(BuildContext context) {
+    final configTheme = Provider.of<ConfigTheme>(context);
+    final configFont = Provider.of<ConfigFont>(context);
+    return Scaffold(
+      body: Consumer<ConfigApi>(
+        builder: (context, provider, chidl){
+          if(provider.isDetailLoading){
+            return const Center(child: CircularProgressIndicator(),);
+          }
+          if(provider.restaurant == null){
+            return Center(child: Text('No Data',style: myTextTheme(configFont.font).labelLarge,),);
+          }
+          final restaurant = provider.restaurant!;
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image(
+                    image: _configLink.getLinkImage('large', restaurant.restaurant.pictureId),
+                    height: 250.0,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                  const SizedBox(height: 20.0,),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Table(
+                        columnWidths: const {
+                          0:IntrinsicColumnWidth(),
+                          1:IntrinsicColumnWidth(),
+                          2:IntrinsicColumnWidth(),
+                        },
+                        children: [
+                          TableRow(children: [
+                            Text('Restaurant', style: myTextTheme(configFont.font).labelMedium,),
+                            Text(':', style: myTextTheme(configFont.font).labelMedium,),
+                            Text(restaurant.restaurant.name, style: myTextTheme(configFont.font).bodyLarge,)
+                          ]),
+                          TableRow(children: [
+                            Text('Rating', style: myTextTheme(configFont.font).labelMedium,),
+                            Text(':', style: myTextTheme(configFont.font).labelMedium,),
+                            Text(restaurant.restaurant.rating.toString(), style: myTextTheme(configFont.font).bodyLarge,)
+                          ]),
+                          TableRow(children: [
+                            Text('Kota', style: myTextTheme(configFont.font).labelMedium,),
+                            Text(':', style: myTextTheme(configFont.font).labelMedium,),
+                            Text(restaurant.restaurant.city, style: myTextTheme(configFont.font).bodyLarge,)
+                          ]),
+                          TableRow(children: [
+                            Text('Alamat', style: myTextTheme(configFont.font).labelMedium,),
+                            Text(':', style: myTextTheme(configFont.font).labelMedium,),
+                            Text(restaurant.restaurant.address, style: myTextTheme(configFont.font).bodyLarge,)
+                          ]),
+                          TableRow(children: [
+                            Text('Deskripsi', style: myTextTheme(configFont.font).labelMedium,),
+                            Text(':', style: myTextTheme(configFont.font).labelMedium,),
+                            Text(restaurant.restaurant.description, style: myTextTheme(configFont.font).bodyLarge,)
+                          ]),
+                          TableRow(children: [
+                            Text('Kateori', style: myTextTheme(configFont.font).labelMedium,),
+                            Text(':', style: myTextTheme(configFont.font).labelMedium,),
+                            Text(restaurant.restaurant.categories.map((item) => item.name).join(', '), style: myTextTheme(configFont.font).bodyLarge,)
+                          ])
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20.0,),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Menu', style: myTextTheme(configFont.font).headlineMedium,),
+                      Text('Makanan', style: myTextTheme(configFont.font).bodyLarge,),
+                      SizedBox(
+                        height: 120.0,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: restaurant.restaurant.menus.foods.length,
+                          itemBuilder: (context, index) {
+                            final menu_food = restaurant.restaurant.menus.foods.elementAt(index);
+                            return Card(
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              shadowColor: configTheme.isDarkMode ? darkSecondaryColor : lightSecondaryColor,
+                              color: configTheme.isDarkMode ? darkSecondaryColor : lightSecondaryColor,
+                              child: Container(
+                                width: 200,
+                                height: 120,
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Center(
+                                      child: Icon(
+                                        Icons.fastfood,
+                                        size: 40,
+                                        color: Colors.grey[400],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      menu_food.name,
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      Text('Minuman', style: myTextTheme(configFont.font).bodyLarge,),
+                      SizedBox(
+                        height: 120.0,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: restaurant.restaurant.menus.drinks.length,
+                          itemBuilder: (context, index) {
+                            final menu_drink = restaurant.restaurant.menus.drinks.elementAt(index);
+                            return Card(
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              shadowColor: configTheme.isDarkMode ? darkSecondaryColor : lightSecondaryColor,
+                              color: configTheme.isDarkMode ? darkSecondaryColor : lightSecondaryColor,
+                              child: Container(
+                                width: 200,
+                                height: 120,
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Center(
+                                      child: Icon(
+                                        Icons.fastfood,
+                                        size: 40,
+                                        color: Colors.grey[400],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      menu_drink.name,
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 20.0,),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Daftar Riview', style: myTextTheme(configFont.font).headlineMedium,),
+                      ListView.builder(
+                        itemCount: restaurant.restaurant.customerReviews.length,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          final riview_restaurant = restaurant.restaurant.customerReviews.elementAt(index);
+                          return Card(
+                            shadowColor: configTheme.isDarkMode ? darkSecondaryColor : lightSecondaryColor,
+                            color: configTheme.isDarkMode ? darkSecondaryColor : lightSecondaryColor,
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const CircleAvatar(
+                                        backgroundColor: Colors.blueAccent,
+                                        child: Icon(Icons.person, color: Colors.white),
+                                      ),
+                                      const SizedBox(width: 10.0),
+                                      Text(riview_restaurant.name, style: myTextTheme(configFont.font).labelLarge),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 5.0),
+                                  Text(riview_restaurant.review, style: myTextTheme(configFont.font).labelMedium),
+                                  const SizedBox(height: 5.0),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Text(riview_restaurant.date, style: myTextTheme(configFont.font).labelSmall),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      )
+    );
+  }
+}
