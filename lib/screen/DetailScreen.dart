@@ -5,12 +5,15 @@ import 'package:restaurant_app/config/config_api.dart';
 import 'package:restaurant_app/config/config_font.dart';
 import 'package:restaurant_app/config/config_theme.dart';
 import 'package:restaurant_app/helper/link.dart';
+import 'package:restaurant_app/model/add_riview.dart';
 import 'package:restaurant_app/model/detail_restaurant.dart';
 
 class Detailscreen extends StatelessWidget {
   Detailscreen({super.key, required this.id});
   final String id;
   final Link _configLink = new Link();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _reviewController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final configTheme = Provider.of<ConfigTheme>(context);
@@ -177,7 +180,85 @@ class Detailscreen extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Daftar Riview', style: myTextTheme(configFont.font).headlineMedium,),
+                      Text('Tambah Review', style: myTextTheme(configFont.font).headlineMedium,),
+                      Column(
+                        children: [
+                          TextField(
+                            controller: _nameController,
+                            decoration: InputDecoration(
+                              labelText: 'Nama',
+                              floatingLabelBehavior: FloatingLabelBehavior.auto,
+                              hintText: 'Masukkan Nama',
+                              border: const OutlineInputBorder(),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                              labelStyle: TextStyle(color: configTheme.isDarkMode ? lightPrimaryColor : darkPrimaryColor),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: configTheme.isDarkMode ? lightPrimaryColor : darkPrimaryColor, width: 2),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 15.0,),
+                          TextField(
+                            controller: _reviewController,
+                            maxLines: 5,
+                            decoration: InputDecoration(
+                              labelText: 'Masukkan Review',
+                              floatingLabelBehavior: FloatingLabelBehavior.auto, 
+                              labelStyle: TextStyle(color: configTheme.isDarkMode ? lightPrimaryColor : darkPrimaryColor),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: configTheme.isDarkMode ? lightPrimaryColor : darkPrimaryColor, width: 2),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 15.0,),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () async {
+                                  String name = _nameController.text.trim();
+                                  String review = _reviewController.text.trim();
+                                  if(name.isNotEmpty && review.isNotEmpty){
+                                    try {
+                                      await provider.addReviewRestaurant(context, id, name, review);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text("Review submitted successfully!")),
+                                        );
+                                        _nameController.clear();
+                                        _reviewController.clear();
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text("Failed to submit review")),
+                                      );
+                                    }
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: configTheme.isDarkMode ? Colors.orange[800] : Colors.blue,
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(vertical: 15),
+                                ),
+                                child: Text(
+                                  'Submit',
+                                  style: myTextTheme(configFont.font).labelLarge,
+                                ),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 20.0,),
+                      Text('Daftar Review', style: myTextTheme(configFont.font).headlineMedium,),
                       ListView.builder(
                         itemCount: restaurant.restaurant.customerReviews.length,
                         shrinkWrap: true,
