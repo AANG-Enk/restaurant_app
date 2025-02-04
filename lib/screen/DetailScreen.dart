@@ -35,7 +35,7 @@ class Detailscreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Image(
-                    image: _configLink.getLinkImage('large', restaurant.restaurant.pictureId),
+                    image: restaurant.restaurant.pictureId != null ? _configLink.getLinkImage('small', restaurant.restaurant.pictureId!) : const NetworkImage('https://ih1.redbubble.net/image.4905811447.8675/flat,750x,075,f-pad,750x1000,f8f8f8.jpg'),
                     height: 250.0,
                     width: double.infinity,
                     fit: BoxFit.cover,
@@ -54,32 +54,32 @@ class Detailscreen extends StatelessWidget {
                           TableRow(children: [
                             Text('Restaurant', style: myTextTheme(configFont.font).labelMedium,),
                             Text(':', style: myTextTheme(configFont.font).labelMedium,),
-                            Text(restaurant.restaurant.name, style: myTextTheme(configFont.font).bodyLarge,)
+                            Text(restaurant.restaurant.name != null ? restaurant.restaurant.name! : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
                           ]),
                           TableRow(children: [
                             Text('Rating', style: myTextTheme(configFont.font).labelMedium,),
                             Text(':', style: myTextTheme(configFont.font).labelMedium,),
-                            Text(restaurant.restaurant.rating.toString(), style: myTextTheme(configFont.font).bodyLarge,)
+                            Text(restaurant.restaurant.rating != null ? restaurant.restaurant.rating.toString()! : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
                           ]),
                           TableRow(children: [
                             Text('Kota', style: myTextTheme(configFont.font).labelMedium,),
                             Text(':', style: myTextTheme(configFont.font).labelMedium,),
-                            Text(restaurant.restaurant.city, style: myTextTheme(configFont.font).bodyLarge,)
+                            Text(restaurant.restaurant.city != null ? restaurant.restaurant.city! : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
                           ]),
                           TableRow(children: [
                             Text('Alamat', style: myTextTheme(configFont.font).labelMedium,),
                             Text(':', style: myTextTheme(configFont.font).labelMedium,),
-                            Text(restaurant.restaurant.address, style: myTextTheme(configFont.font).bodyLarge,)
+                            Text(restaurant.restaurant.address != null ? restaurant.restaurant.address! : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
                           ]),
                           TableRow(children: [
                             Text('Deskripsi', style: myTextTheme(configFont.font).labelMedium,),
                             Text(':', style: myTextTheme(configFont.font).labelMedium,),
-                            Text(restaurant.restaurant.description, style: myTextTheme(configFont.font).bodyLarge,)
+                            Text(restaurant.restaurant.description != null ? restaurant.restaurant.description! : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
                           ]),
                           TableRow(children: [
                             Text('Kateori', style: myTextTheme(configFont.font).labelMedium,),
                             Text(':', style: myTextTheme(configFont.font).labelMedium,),
-                            Text(restaurant.restaurant.categories.map((item) => item.name).join(', '), style: myTextTheme(configFont.font).bodyLarge,)
+                            Text(restaurant.restaurant.categories != null ? restaurant.restaurant.categories!.map((item) => item.name).join(', ') : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
                           ])
                         ],
                       ),
@@ -95,9 +95,9 @@ class Detailscreen extends StatelessWidget {
                         height: 120.0,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: restaurant.restaurant.menus.foods.length,
+                          itemCount: restaurant.restaurant.menus!.foods.length,
                           itemBuilder: (context, index) {
-                            final menu_food = restaurant.restaurant.menus.foods.elementAt(index);
+                            final menu_food = restaurant.restaurant.menus!.foods.elementAt(index);
                             return Card(
                               elevation: 2,
                               shape: RoundedRectangleBorder(
@@ -137,9 +137,9 @@ class Detailscreen extends StatelessWidget {
                         height: 120.0,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: restaurant.restaurant.menus.drinks.length,
+                          itemCount: restaurant.restaurant.menus!.drinks.length,
                           itemBuilder: (context, index) {
-                            final menu_drink = restaurant.restaurant.menus.drinks.elementAt(index);
+                            final menu_drink = restaurant.restaurant.menus!.drinks.elementAt(index);
                             return Card(
                               elevation: 2,
                               shape: RoundedRectangleBorder(
@@ -260,11 +260,11 @@ class Detailscreen extends StatelessWidget {
                       const SizedBox(height: 20.0,),
                       Text('Daftar Review', style: myTextTheme(configFont.font).headlineMedium,),
                       ListView.builder(
-                        itemCount: restaurant.restaurant.customerReviews.length,
+                        itemCount: restaurant.restaurant.customerReviews!.length,
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          final riview_restaurant = restaurant.restaurant.customerReviews.elementAt(index);
+                          final riview_restaurant = restaurant.restaurant.customerReviews!.elementAt(index);
                           return Card(
                             shadowColor: configTheme.isDarkMode ? darkSecondaryColor : lightSecondaryColor,
                             color: configTheme.isDarkMode ? darkSecondaryColor : lightSecondaryColor,

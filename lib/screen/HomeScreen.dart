@@ -78,7 +78,7 @@ class HomeScreen extends StatelessWidget{
                         children: [
                           CircleAvatar(
                             radius: 35.0,
-                            backgroundImage: _configLink.getLinkImage('small', restaurant.pictureId),
+                            backgroundImage: restaurant.pictureId != null ? _configLink.getLinkImage('small', restaurant.pictureId!) : const NetworkImage('https://ih1.redbubble.net/image.4905811447.8675/flat,750x,075,f-pad,750x1000,f8f8f8.jpg'),
                             backgroundColor: configTheme.isDarkMode ? darkBlackColor : lightBlackColor,
                           ),
                           Container(
@@ -87,18 +87,18 @@ class HomeScreen extends StatelessWidget{
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  restaurant.name,
+                                  restaurant.name != null ? restaurant.name! : 'Tidak Diketahui',
                                   style: myTextTheme(configFont.font).titleLarge
                                 ),
                                 const SizedBox(height: 5.0,),
                                 Text(
-                                  restaurant.city,
+                                  restaurant.city != null ? restaurant.city! : 'Tidak Diketahui',
                                   style: myTextTheme(configFont.font).titleMedium
                                 ),
                                 Row(
                                   children: [
                                     RatingBar.builder(
-                                      initialRating: restaurant.rating,
+                                      initialRating: restaurant.rating != null ? restaurant.rating! : 0.0,
                                       minRating: 1.0,
                                       direction: Axis.horizontal,
                                       allowHalfRating: true,

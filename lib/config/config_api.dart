@@ -7,24 +7,29 @@ import 'package:restaurant_app/model/add_riview.dart';
 import 'package:restaurant_app/model/detail_restaurant.dart';
 import 'package:restaurant_app/model/list_restaurant.dart';
 import 'package:http/http.dart' as http;
+import 'package:restaurant_app/model/search_restaurant.dart';
 
 class ConfigApi with ChangeNotifier {
   final Link _configLink = new Link();
   List<Restaurant> _lists = [];
   List<AddRiview> _reviews = [];
   DetailRestaurant? _restaurant;
+  List<Restaurant> _listRestaurant = [];
   String _message = '';
   bool _isLoading = false;
   bool _isDetailLoading = false;
   bool _isAddReviewLoading = false;
+  bool _isSearchLoading = false;
 
   List<Restaurant> get lists => _lists;
   List<AddRiview> get riviews => _reviews;
   DetailRestaurant? get restaurant => _restaurant;
+  List<Restaurant> get listRestaurant => _listRestaurant;
   bool get isLoading => _isLoading;
   bool get isDetailLoading => _isDetailLoading;
   bool get isAddreviewLoading => _isAddReviewLoading;
   String get message => _message;
+  bool get isSearchLoading => _isSearchLoading;
 
   Future<void> getListRestaurant() async{
     _isLoading = true;
@@ -39,8 +44,9 @@ class ConfigApi with ChangeNotifier {
       }else{
         throw Exception('Failed to load restaurants');
       }
-    } catch (e) {
-      print("Error : ${e}");
+    } catch (e, stackTrace) {
+      print("Error : ${e.toString()}");
+      print("Stack Trace : ${stackTrace}");
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -70,7 +76,7 @@ class ConfigApi with ChangeNotifier {
 
   void updateReview(CustomerReview custom){
     if(restaurant != null){
-      restaurant!.restaurant.customerReviews.insert(0, custom);
+      restaurant!.restaurant.customerReviews!.insert(0, custom);
       notifyListeners();
     }
   }
@@ -103,6 +109,31 @@ class ConfigApi with ChangeNotifier {
       print("Error : ${e}");
     } finally {
       _isDetailLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> searchByNameRestaurant(BuildContext context, String search) async{
+    _isSearchLoading = true;
+    notifyListeners();
+    _listRestaurant.clear();
+    final url = _configLink.getLinkSearchRestaurant(search);
+    try {
+      final response = await http.get(url);
+      if(response.statusCode == 200){
+        if(search != ''){
+          final search_restaurant = SearchRestaurant.fromJson(json.decode(response.body));
+          _listRestaurant = search_restaurant.restaurants;
+        }else{
+          _listRestaurant.clear();
+        }
+      }else{
+        throw Exception('Failed to load restaurants');
+      }
+    } catch (e) {
+      print("Error : ${e}");
+    } finally {
+      _isSearchLoading = false;
       notifyListeners();
     }
   }
