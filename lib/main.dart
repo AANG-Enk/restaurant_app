@@ -87,7 +87,6 @@ class _BottomNavScreenState extends State<BottomNavScreen>{
   @override
   Widget build(BuildContext context) {
     final configTheme = Provider.of<ConfigTheme>(context);
-    final configFont = Provider.of<ConfigFont>(context);
     bool isDarkMode = configTheme.isDarkMode;
     return Scaffold(
       body: PageView(

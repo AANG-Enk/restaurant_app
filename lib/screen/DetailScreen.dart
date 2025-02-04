@@ -5,8 +5,6 @@ import 'package:restaurant_app/config/config_api.dart';
 import 'package:restaurant_app/config/config_font.dart';
 import 'package:restaurant_app/config/config_theme.dart';
 import 'package:restaurant_app/helper/link.dart';
-import 'package:restaurant_app/model/add_riview.dart';
-import 'package:restaurant_app/model/detail_restaurant.dart';
 
 class Detailscreen extends StatelessWidget {
   Detailscreen({super.key, required this.id});
@@ -59,7 +57,7 @@ class Detailscreen extends StatelessWidget {
                           TableRow(children: [
                             Text('Rating', style: myTextTheme(configFont.font).labelMedium,),
                             Text(':', style: myTextTheme(configFont.font).labelMedium,),
-                            Text(restaurant.restaurant.rating != null ? restaurant.restaurant.rating.toString()! : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
+                            Text(restaurant.restaurant.rating != null ? restaurant.restaurant.rating.toString() : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
                           ]),
                           TableRow(children: [
                             Text('Kota', style: myTextTheme(configFont.font).labelMedium,),
