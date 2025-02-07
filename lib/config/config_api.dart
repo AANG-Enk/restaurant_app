@@ -9,7 +9,7 @@ class ConfigApi with ChangeNotifier {
   ApiResult<List<Restaurant>> _listRestaurants = const Initial();
   ApiResult<List<Restaurant>> get listRestaurants => _listRestaurants;
 
-  ApiResult<Restaurant> _restaurant = const Initial();
+  ApiResult<Restaurant> _restaurant = const Loading();
   ApiResult<Restaurant> get restaurant => _restaurant;
 
   ApiResult<AddRiview> _addReview = const Initial();
@@ -18,8 +18,24 @@ class ConfigApi with ChangeNotifier {
   ApiResult<List<Restaurant>> _searchListRestaurant = const Initial();
   ApiResult<List<Restaurant>> get searchListRestaurant => _searchListRestaurant;
 
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController reviewController = TextEditingController();
+
   ConfigApi(this.apiServices){
     getListRestaurant();
+  }
+
+  void cleartext() {
+    nameController.clear();
+    reviewController.clear();
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    reviewController.dispose();
+    super.dispose();
   }
 
 
