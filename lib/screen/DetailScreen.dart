@@ -5,6 +5,8 @@ import 'package:restaurant_app/config/config_api.dart';
 import 'package:restaurant_app/config/config_font.dart';
 import 'package:restaurant_app/config/config_theme.dart';
 import 'package:restaurant_app/helper/link.dart';
+import 'package:restaurant_app/model/detail_restaurant.dart';
+import 'package:restaurant_app/utils/api_result.dart';
 
 class Detailscreen extends StatelessWidget {
   Detailscreen({super.key, required this.id});
@@ -16,16 +18,15 @@ class Detailscreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final configTheme = Provider.of<ConfigTheme>(context);
     final configFont = Provider.of<ConfigFont>(context);
-    return Scaffold(
-      body: Consumer<ConfigApi>(
-        builder: (context, provider, chidl){
-          if(provider.isDetailLoading){
-            return const Center(child: CircularProgressIndicator(),);
-          }
-          if(provider.restaurant == null){
-            return Center(child: Text('No Data',style: myTextTheme(configFont.font).labelLarge,),);
-          }
-          final restaurant = provider.restaurant!;
+    final submitState = context.watch<ConfigApi>().addRiview;
+    return Consumer<ConfigApi>(
+      builder: (context, provider, child){
+        if(provider.restaurant is Loading){
+          return const Center(child: CircularProgressIndicator(),);
+        }else if(provider.restaurant is Error){
+          return const Center(child: Text('Internal Server Error'),);
+        }else if(provider.restaurant is Success){
+          var data = (provider.restaurant as Success).data;
           return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -33,7 +34,7 @@ class Detailscreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Image(
-                    image: restaurant.restaurant.pictureId != null ? _configLink.getLinkImage('small', restaurant.restaurant.pictureId!) : const NetworkImage('https://ih1.redbubble.net/image.4905811447.8675/flat,750x,075,f-pad,750x1000,f8f8f8.jpg'),
+                    image: data.pictureId != null ? _configLink.getLinkImage('small', data.pictureId!) : const NetworkImage('https://ih1.redbubble.net/image.4905811447.8675/flat,750x,075,f-pad,750x1000,f8f8f8.jpg'),
                     height: 250.0,
                     width: double.infinity,
                     fit: BoxFit.cover,
@@ -52,32 +53,32 @@ class Detailscreen extends StatelessWidget {
                           TableRow(children: [
                             Text('Restaurant', style: myTextTheme(configFont.font).labelMedium,),
                             Text(':', style: myTextTheme(configFont.font).labelMedium,),
-                            Text(restaurant.restaurant.name != null ? restaurant.restaurant.name! : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
+                            Text(data.name != null ? data.name! : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
                           ]),
                           TableRow(children: [
                             Text('Rating', style: myTextTheme(configFont.font).labelMedium,),
                             Text(':', style: myTextTheme(configFont.font).labelMedium,),
-                            Text(restaurant.restaurant.rating != null ? restaurant.restaurant.rating.toString() : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
+                            Text(data.rating != null ? data.rating.toString() : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
                           ]),
                           TableRow(children: [
                             Text('Kota', style: myTextTheme(configFont.font).labelMedium,),
                             Text(':', style: myTextTheme(configFont.font).labelMedium,),
-                            Text(restaurant.restaurant.city != null ? restaurant.restaurant.city! : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
+                            Text(data.city != null ? data.city! : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
                           ]),
                           TableRow(children: [
                             Text('Alamat', style: myTextTheme(configFont.font).labelMedium,),
                             Text(':', style: myTextTheme(configFont.font).labelMedium,),
-                            Text(restaurant.restaurant.address != null ? restaurant.restaurant.address! : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
+                            Text(data.address != null ? data.address! : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
                           ]),
                           TableRow(children: [
                             Text('Deskripsi', style: myTextTheme(configFont.font).labelMedium,),
                             Text(':', style: myTextTheme(configFont.font).labelMedium,),
-                            Text(restaurant.restaurant.description != null ? restaurant.restaurant.description! : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
+                            Text(data.description != null ? data.description! : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
                           ]),
                           TableRow(children: [
                             Text('Kateori', style: myTextTheme(configFont.font).labelMedium,),
                             Text(':', style: myTextTheme(configFont.font).labelMedium,),
-                            Text(restaurant.restaurant.categories != null ? restaurant.restaurant.categories!.map((item) => item.name).join(', ') : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
+                            Text(data.categories != null ? data.categories!.map((item) => item.name).join(', ') : 'Tidak Diketahui', style: myTextTheme(configFont.font).bodyLarge,)
                           ])
                         ],
                       ),
@@ -93,9 +94,9 @@ class Detailscreen extends StatelessWidget {
                         height: 120.0,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: restaurant.restaurant.menus!.foods.length,
+                          itemCount: data.menus!.foods.length,
                           itemBuilder: (context, index) {
-                            final menu_food = restaurant.restaurant.menus!.foods.elementAt(index);
+                            final menu_food = data.menus!.foods.elementAt(index);
                             return Card(
                               elevation: 2,
                               shape: RoundedRectangleBorder(
@@ -135,9 +136,9 @@ class Detailscreen extends StatelessWidget {
                         height: 120.0,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: restaurant.restaurant.menus!.drinks.length,
+                          itemCount: data.menus!.drinks.length,
                           itemBuilder: (context, index) {
-                            final menu_drink = restaurant.restaurant.menus!.drinks.elementAt(index);
+                            final menu_drink = data.menus!.drinks.elementAt(index);
                             return Card(
                               elevation: 2,
                               shape: RoundedRectangleBorder(
@@ -220,23 +221,28 @@ class Detailscreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               ElevatedButton(
-                                onPressed: () async {
-                                  String name = _nameController.text.trim();
-                                  String review = _reviewController.text.trim();
-                                  if(name.isNotEmpty && review.isNotEmpty){
-                                    try {
-                                      await provider.addReviewRestaurant(context, id, name, review);
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(content: Text("Review submitted successfully!")),
-                                        );
+                                onPressed: switch(submitState){
+                                  Loading() => null,
+                                  _ => () async{
+                                    String name = _nameController.text.trim();
+                                    String review = _reviewController.text.trim();
+      
+                                    if (name.isNotEmpty && review.isNotEmpty) {
+                                      try {
+                                        await context.read<ConfigApi>().addReviewRestaurant(id, name, review);
                                         _nameController.clear();
                                         _reviewController.clear();
-                                    } catch (e) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text("Failed to submit review")),
-                                      );
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: const Text('Berhasil Menambahkan Review'))
+                                        );
+                                      } catch (e) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: const Text('Gagal Menambahkan Review'))
+                                        );
+                                      }
+                                      
                                     }
-                                  }
+                                  },
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: configTheme.isDarkMode ? Colors.orange[800] : Colors.blue,
@@ -246,10 +252,10 @@ class Detailscreen extends StatelessWidget {
                                   ),
                                   padding: const EdgeInsets.symmetric(vertical: 15),
                                 ),
-                                child: Text(
-                                  'Submit',
-                                  style: myTextTheme(configFont.font).labelLarge,
-                                ),
+                                child: switch(submitState){
+                                  Loading() => const Center(child: CircularProgressIndicator(),),
+                                  _ => Text('Submit',style: myTextTheme(configFont.font).labelLarge,),
+                                },
                               )
                             ],
                           )
@@ -258,11 +264,11 @@ class Detailscreen extends StatelessWidget {
                       const SizedBox(height: 20.0,),
                       Text('Daftar Review', style: myTextTheme(configFont.font).headlineMedium,),
                       ListView.builder(
-                        itemCount: restaurant.restaurant.customerReviews!.length,
+                        itemCount: data.customerReviews!.length,
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          final riview_restaurant = restaurant.restaurant.customerReviews!.elementAt(index);
+                          final riview_restaurant = data.customerReviews!.elementAt(index);
                           return Card(
                             shadowColor: configTheme.isDarkMode ? darkSecondaryColor : lightSecondaryColor,
                             color: configTheme.isDarkMode ? darkSecondaryColor : lightSecondaryColor,
@@ -302,8 +308,10 @@ class Detailscreen extends StatelessWidget {
               ),
             ),
           );
-        },
-      )
+        }else{
+          return const Center(child: Text('Tidak Ada Data'),);
+        }
+      },
     );
   }
 }

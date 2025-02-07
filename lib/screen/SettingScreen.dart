@@ -75,8 +75,8 @@ class SettingScreen extends StatelessWidget {
                           'Tipe Font',
                           style: myTextTheme(configFont.font).labelLarge,
                         ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.4,
+                        SizedBox(width: 15.0,),
+                        Expanded(
                           child: DropdownButtonFormField(
                             value: configFont.font,
                             decoration: const InputDecoration(
@@ -94,35 +94,6 @@ class SettingScreen extends StatelessWidget {
                         )
                       ],
                     ),
-                    // Divider(
-                    //   color: configTheme.isDarkMode ? darkWhiteColor : lightWhiteColor,
-                    //   thickness: 1.0,
-                    // ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //   children: [
-                    //     Text(
-                    //       'Tipe Warna',
-                    //       style: myTextTheme(configFont.font).labelLarge,
-                    //     ),
-                    //     SizedBox(
-                    //       width: MediaQuery.of(context).size.width * 0.4,
-                    //       child: DropdownButtonFormField(
-                    //         decoration: const InputDecoration(
-                    //           labelText: 'Pilih Warna',
-                    //           border: OutlineInputBorder(),
-                    //         ),
-                    //         items: colors.map((item) => DropdownMenuItem(
-                    //           value: item,
-                    //           child: Text(item, style: myTextTheme(configFont.font).titleMedium,),
-                    //         )).toList(), 
-                    //         onChanged: (value){
-                    //           print("Pilih Warna : ${value}");
-                    //         }
-                    //       ),
-                    //     )
-                    //   ],
-                    // ),
                   ],
                 ),
               ),

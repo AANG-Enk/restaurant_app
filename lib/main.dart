@@ -9,19 +9,49 @@ import 'package:restaurant_app/config/config_theme.dart';
 import 'package:restaurant_app/screen/HomeScreen.dart';
 import 'package:restaurant_app/screen/SearchScreen.dart';
 import 'package:restaurant_app/screen/SettingScreen.dart';
+import 'package:restaurant_app/services/api_services.dart';
+
+class BottomNavigationProvider extends ChangeNotifier{
+  int _selectedPage = 0;
+  final PageController _pageController = PageController();
+
+  int get selectedPage => _selectedPage;
+  PageController get pageController => _pageController;
+
+  void activePage(int index) {
+    if(_selectedPage != index){
+      _selectedPage = index;
+      _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+      notifyListeners();
+    }
+  }
+
+  void jumpPage(int index){
+    _selectedPage = index;
+    _pageController.jumpToPage(index);
+    notifyListeners();
+  }
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final bottomNavProvider = BottomNavigationProvider();
   final configTheme = ConfigTheme();
   final configFont = ConfigFont();
-  final configApi = ConfigApi();
+  final configApi = ConfigApi(ApiServices());
   await configTheme.loadTheme();
   await configFont.loadFont();
-  await configApi.getListRestaurant();
 
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+          create: (context) => bottomNavProvider,
+        ),
         ChangeNotifierProvider(
           create: (context) => configTheme,
         ),
@@ -30,7 +60,7 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (context) => configApi,
-        )
+        ),
       ],
       child: const MyApp(),
     ),
@@ -55,44 +85,27 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class BottomNavScreen extends StatefulWidget{
-  _BottomNavScreenState createState() => _BottomNavScreenState();
-}
-
-class _BottomNavScreenState extends State<BottomNavScreen>{
-  int selectedPage = 0;
-  final PageController _pageController = PageController();
-  final List<Widget> _pages = [
-    HomeScreen(),
-    SearchScreen(),
-    SettingScreen(),
-  ];
-
-  void onPage(int index){
-    setState(() {
-      selectedPage = index;
-    });
-  }
-
-  void onNavItem(int index){
-    setState((){
-      _pageController.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    });
-  }
+class BottomNavScreen extends StatelessWidget{
+  const BottomNavScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final configTheme = Provider.of<ConfigTheme>(context);
+    final navigationProvider = Provider.of<BottomNavigationProvider>(context);
     bool isDarkMode = configTheme.isDarkMode;
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: onPage,
-        children: _pages,
+      body: SafeArea(
+        child: PageView(
+          controller: navigationProvider.pageController,
+          onPageChanged: (index){
+            navigationProvider.activePage(index);
+          },
+          children: [
+            HomeScreen(),
+            SearchScreen(),
+            SettingScreen()
+          ],
+        ),
       ),
       bottomNavigationBar: CurvedNavigationBar(
         height: 55.0,
@@ -114,8 +127,12 @@ class _BottomNavScreenState extends State<BottomNavScreen>{
             child: Icon(FontAwesomeIcons.cogs, size: 30.0,),
           ),
         ],
-        onTap: onNavItem
+        index: navigationProvider.selectedPage,
+        onTap: (index){
+          navigationProvider.jumpPage(index);
+        },
       )
     );
   }
+
 }

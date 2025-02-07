@@ -8,132 +8,81 @@ import 'package:restaurant_app/model/detail_restaurant.dart';
 import 'package:restaurant_app/model/list_restaurant.dart';
 import 'package:http/http.dart' as http;
 import 'package:restaurant_app/model/search_restaurant.dart';
+import 'package:restaurant_app/services/api_services.dart';
+import 'package:restaurant_app/utils/api_result.dart';
 
 class ConfigApi with ChangeNotifier {
-  final Link _configLink = new Link();
-  List<Restaurant> _lists = [];
-  List<AddRiview> _reviews = [];
-  DetailRestaurant? _restaurant;
-  List<Restaurant> _listRestaurant = [];
-  String _message = '';
-  bool _isLoading = false;
-  bool _isDetailLoading = false;
-  bool _isAddReviewLoading = false;
-  bool _isSearchLoading = false;
+  final ApiServices apiServices;
+  ApiResult<List<Restaurant>> _listRestaurants = const Initial();
+  ApiResult<List<Restaurant>> get listRestaurants => _listRestaurants;
 
-  List<Restaurant> get lists => _lists;
-  List<AddRiview> get riviews => _reviews;
-  DetailRestaurant? get restaurant => _restaurant;
-  List<Restaurant> get listRestaurant => _listRestaurant;
-  bool get isLoading => _isLoading;
-  bool get isDetailLoading => _isDetailLoading;
-  bool get isAddreviewLoading => _isAddReviewLoading;
-  String get message => _message;
-  bool get isSearchLoading => _isSearchLoading;
+  ApiResult<Restaurant> _restaurant = const Initial();
+  ApiResult<Restaurant> get restaurant => _restaurant;
+
+  ApiResult<AddRiview> _addReview = const Initial();
+  ApiResult<AddRiview> get addRiview => _addReview;
+
+  ApiResult<List<Restaurant>> _searchListRestaurant = const Initial();
+  ApiResult<List<Restaurant>> get searchListRestaurant => _searchListRestaurant;
+
+  ConfigApi(this.apiServices){
+    getListRestaurant();
+  }
+
 
   Future<void> getListRestaurant() async{
-    _isLoading = true;
-    notifyListeners();
-
-    final url = _configLink.getLinkListRestaurant();
     try {
-      final response = await http.get(url);
-      if(response.statusCode == 200){
-        final listRestaurant = ListRestaurant.fromJson(json.decode(response.body));
-        _lists = listRestaurant.restaurants;
+      _listRestaurants = const Loading();
+      notifyListeners();
+      final data = await apiServices.getAllRestaurant();
+      if(data is Success){
+        _listRestaurants = data;
       }else{
-        throw Exception('Failed to load restaurants');
+        _listRestaurants = Error('Gagal Load Data');
       }
+      notifyListeners();
+    } catch (e) {
+      _listRestaurants = Error(e.toString());
+      notifyListeners();
+    }
+  }
+
+  Future<void> getRestaurant(String id) async{
+    try {
+      _restaurant = const Loading();
+      notifyListeners();
+      final data = await apiServices.getRestaurant(id);
+      _restaurant = data;
+      notifyListeners();
     } catch (e, stackTrace) {
-      print("Error : ${e.toString()}");
-      print("Stack Trace : ${stackTrace}");
-    } finally {
-      _isLoading = false;
+      _restaurant = Error(e.toString());
       notifyListeners();
     }
   }
 
-  Future<void> getDetailRestaurant(String res_id) async{
-    _isDetailLoading = true;
-    notifyListeners();
-
-    final url = _configLink.getLinkDetailRestaurant(res_id);
+  Future<void> addReviewRestaurant(String id, String name, String review) async{
     try {
-      final response = await http.get(url);
-      if(response.statusCode == 200){
-        final detail_restaurant = DetailRestaurant.fromJson(json.decode(response.body));
-        _restaurant = detail_restaurant;
-      }else{
-        throw Exception('Failed to load restaurants');
-      }
-    } catch (e) {
-      print("Error : ${e}");
-    } finally {
-      _isDetailLoading = false;
+      _addReview = const Loading();
+      notifyListeners();
+      final data = await apiServices.addReviewRestaurant(id, name, review);
+      _addReview = data;
+      notifyListeners();
+      await getRestaurant(id);
+    } catch (e, stackTrace) {
+      _addReview = Error(e.toString());
       notifyListeners();
     }
   }
 
-  void updateReview(CustomerReview custom){
-    if(restaurant != null){
-      restaurant!.restaurant.customerReviews!.insert(0, custom);
-      notifyListeners();
-    }
-  }
-
-  Future<void> addReviewRestaurant(BuildContext context, String id, String name, String review) async{
-    _isAddReviewLoading = true;
-    notifyListeners();
-
-    final url = _configLink.getLinkAddReviewRestaurant();
+  Future<void> getSearchRestaurant(String name) async{
     try {
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: json.encode({
-          "id" : id,
-          "name" : name,
-          "review" : review,
-        }),
-      );
-      if(response.statusCode == 201 || response.statusCode == 200){
-        final data = json.decode(response.body);
-        AddRiview newReviewRestaurant = AddRiview.fromJson(data);
-        Provider.of<ConfigApi>(context, listen: false).updateReview(newReviewRestaurant.customerReviews.last);
-      }else{
-        throw Exception('Failed to load review');
-      }
-    } catch (e) {
-      print("Error : ${e}");
-    } finally {
-      _isDetailLoading = false;
+      _searchListRestaurant = const Loading();
       notifyListeners();
-    }
-  }
-
-  Future<void> searchByNameRestaurant(BuildContext context, String search) async{
-    _isSearchLoading = true;
-    notifyListeners();
-    _listRestaurant.clear();
-    final url = _configLink.getLinkSearchRestaurant(search);
-    try {
-      final response = await http.get(url);
-      if(response.statusCode == 200){
-        if(search != ''){
-          final search_restaurant = SearchRestaurant.fromJson(json.decode(response.body));
-          _listRestaurant = search_restaurant.restaurants;
-        }else{
-          _listRestaurant.clear();
-        }
-      }else{
-        throw Exception('Failed to load restaurants');
-      }
+      final data = await apiServices.findRestaurantByName(name);
+      _searchListRestaurant = data;
+      notifyListeners();
     } catch (e) {
-      print("Error : ${e}");
-    } finally {
-      _isSearchLoading = false;
+      _searchListRestaurant = Error(e.toString());
       notifyListeners();
     }
   }
