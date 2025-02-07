@@ -134,9 +134,10 @@ class SearchScreen extends StatelessWidget{
                     }
                   );
                 }else if(state is Error){
-                  return const Center(child: Text('Internal Server Error'),);
+                  final message = (state as Error).message;
+                  return Center(child: Text(message, style: myTextTheme(configFont.font).bodyMedium,),);
                 }else{
-                  return const Center(child: Text('Data Tidak Ada'),);
+                  return Center(child: Text('Data Tidak Ada', style: myTextTheme(configFont.font).bodyMedium,),);
                 }
               },
             ),

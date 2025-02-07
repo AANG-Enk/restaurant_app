@@ -5,7 +5,6 @@ import 'package:restaurant_app/config/config_api.dart';
 import 'package:restaurant_app/config/config_font.dart';
 import 'package:restaurant_app/config/config_theme.dart';
 import 'package:restaurant_app/helper/link.dart';
-import 'package:restaurant_app/model/detail_restaurant.dart';
 import 'package:restaurant_app/utils/api_result.dart';
 
 class Detailscreen extends StatelessWidget {
@@ -24,7 +23,8 @@ class Detailscreen extends StatelessWidget {
         if(provider.restaurant is Loading){
           return const Center(child: CircularProgressIndicator(),);
         }else if(provider.restaurant is Error){
-          return const Center(child: Text('Internal Server Error'),);
+          final message = (provider.restaurant as Error).message;
+          return Center(child: Text(message, style: myTextTheme(configFont.font).bodyMedium,),);
         }else if(provider.restaurant is Success){
           var data = (provider.restaurant as Success).data;
           return SingleChildScrollView(
@@ -122,7 +122,7 @@ class Detailscreen extends StatelessWidget {
                                     const SizedBox(height: 10),
                                     Text(
                                       menu_food.name,
-                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                     ),
                                   ],
                                 ),
@@ -164,7 +164,7 @@ class Detailscreen extends StatelessWidget {
                                     const SizedBox(height: 10),
                                     Text(
                                       menu_drink.name,
-                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                     ),
                                   ],
                                 ),
@@ -309,7 +309,7 @@ class Detailscreen extends StatelessWidget {
             ),
           );
         }else{
-          return const Center(child: Text('Tidak Ada Data'),);
+          return Center(child: Text('Tidak Ada Data', style: myTextTheme(configFont.font).bodyLarge,),);
         }
       },
     );

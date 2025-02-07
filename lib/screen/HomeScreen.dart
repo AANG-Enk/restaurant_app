@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
@@ -44,7 +42,8 @@ class HomeScreen extends StatelessWidget{
                 return const Center(child: CircularProgressIndicator(),);
               }
               if(provider.listRestaurants is Error){
-                return const Center(child: Text('Internal Server Error'),);
+                final message = (provider.listRestaurants as Error).message;
+                return Center(child: Text(message, style: myTextTheme(configFont.font).bodyMedium,),);
               }
               if(provider.listRestaurants is Success){
                 var data = (provider.listRestaurants as Success).data;
@@ -53,7 +52,7 @@ class HomeScreen extends StatelessWidget{
                 }
                 return ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: data.length,
                   itemBuilder: (context, index) {
                     final restaurant = data[index];
@@ -128,7 +127,7 @@ class HomeScreen extends StatelessWidget{
                   },
                 );
               }else{
-                return const Center(child: Text('Data Tidak Ada'),);
+                return Center(child: Text('Data Tidak Ada', style: myTextTheme(configFont.font).bodyLarge,),);
               }
             }
           )

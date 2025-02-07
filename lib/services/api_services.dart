@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import 'package:restaurant_app/helper/link.dart';
 import 'package:restaurant_app/model/add_riview.dart';
 import 'package:restaurant_app/model/detail_restaurant.dart';
-import 'package:restaurant_app/model/list_restaurant.dart';
 import 'package:restaurant_app/utils/api_result.dart';
 
 class ApiServices {
@@ -34,7 +33,7 @@ class ApiServices {
       }else{
         return Error("Gagal Memuat Detail Restaurant. Status Code: ${response.statusCode}");
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       return Error("Terjadi kesalahan: ${e.toString()}");
     }
   }
@@ -57,7 +56,7 @@ class ApiServices {
       }else{
         return Error("Gagal Menambahkan Review Restaurant. Status Code: ${response.statusCode}");
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       return Error("Terjadi kesalahan: ${e.toString()}");
     }
   }
@@ -76,7 +75,7 @@ class ApiServices {
       }else{
         return Error("Gagal Memuat Daftar Pencarian Restaurant. Status Code: ${response.statusCode}");
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       return Error("Terjadi kesalahan: ${e.toString()}");
     }
   }

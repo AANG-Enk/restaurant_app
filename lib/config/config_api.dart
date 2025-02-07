@@ -1,13 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:restaurant_app/helper/link.dart';
 import 'package:restaurant_app/model/add_riview.dart';
 import 'package:restaurant_app/model/detail_restaurant.dart';
-import 'package:restaurant_app/model/list_restaurant.dart';
-import 'package:http/http.dart' as http;
-import 'package:restaurant_app/model/search_restaurant.dart';
 import 'package:restaurant_app/services/api_services.dart';
 import 'package:restaurant_app/utils/api_result.dart';
 
@@ -54,7 +47,7 @@ class ConfigApi with ChangeNotifier {
       final data = await apiServices.getRestaurant(id);
       _restaurant = data;
       notifyListeners();
-    } catch (e, stackTrace) {
+    } catch (e) {
       _restaurant = Error(e.toString());
       notifyListeners();
     }
@@ -68,7 +61,7 @@ class ConfigApi with ChangeNotifier {
       _addReview = data;
       notifyListeners();
       await getRestaurant(id);
-    } catch (e, stackTrace) {
+    } catch (e) {
       _addReview = Error(e.toString());
       notifyListeners();
     }

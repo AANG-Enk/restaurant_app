@@ -33,7 +33,7 @@ class SettingScreen extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: Container(
-            padding: EdgeInsets.only(left: 10.0, right: 10.0),
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
             child: Card(
               elevation: 5.0,
               shape: RoundedRectangleBorder(
@@ -75,7 +75,7 @@ class SettingScreen extends StatelessWidget {
                           'Tipe Font',
                           style: myTextTheme(configFont.font).labelLarge,
                         ),
-                        SizedBox(width: 15.0,),
+                        const SizedBox(width: 15.0,),
                         Expanded(
                           child: DropdownButtonFormField(
                             value: configFont.font,
